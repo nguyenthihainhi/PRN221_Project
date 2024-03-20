@@ -15,3 +15,7 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = D:\PRN221\PRN221_Project\TimeTableWebApp
 build_property._RazorSourceGeneratorDebug = 
+
+[D:/PRN221/PRN221_Project/TimeTableWebApp/Pages/TimeTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGltZVRhYmxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 

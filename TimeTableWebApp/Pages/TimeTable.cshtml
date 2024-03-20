@@ -1,0 +1,17 @@
+﻿@page "/timetable"
+@model TimeTableWebApp.Pages.TimeTableModel
+@using TimeTableWebApp.Models
+@{
+}
+<table>
+    <thead>
+        <th>Room</th>
+        @foreach(var slot in Model.TimeSlots)
+        {
+            <th>@slot.Description</th>
+        }
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
