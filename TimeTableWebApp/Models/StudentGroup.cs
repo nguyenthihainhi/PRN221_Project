@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace TimeTableWebApp.Models
 {
-    public partial class StudentClass
+    public partial class StudentGroup
     {
         public int Stid { get; set; }
-        public int Cid { get; set; }
+        public int Gid { get; set; }
 
-        public virtual Class Class { get; set; } = null!;
+        public virtual Group Group { get; set; } = null!;
         public virtual Student Student { get; set; } = null!;
     }
 }

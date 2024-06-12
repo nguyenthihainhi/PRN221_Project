@@ -21,7 +21,14 @@ namespace TimeTableWebApp.Pages
         {
             TimeSlots = _context.TimeSlots.ToList();
             Rooms = _context.Rooms.ToList();
-            Sessions = _context.Sessions.Include(x => x.Room).Include(x => x.TimeSlot).ToList();
+            Sessions = _context.Sessions
+                .Include(x => x.Room)
+                .Include(x => x.TimeSlot)
+                .Include(x => x.Lecturer)
+                .Include(x => x.Group)
+                .Include(x => x.Group.Class)
+                .Include(x => x.Group.Subject)
+                .ToList();
         }
     }
 }

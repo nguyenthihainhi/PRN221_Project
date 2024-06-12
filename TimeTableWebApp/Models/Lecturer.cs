@@ -7,7 +7,6 @@ namespace TimeTableWebApp.Models
     {
         public Lecturer()
         {
-            Classes = new HashSet<Class>();
             Sessions = new HashSet<Session>();
         }
 
@@ -15,7 +14,6 @@ namespace TimeTableWebApp.Models
         public string Lname { get; set; } = null!;
         public string? Displayname { get; set; }
 
-        public virtual ICollection<Class> Classes { get; set; }
         public virtual ICollection<Session> Sessions { get; set; }
     }
 }

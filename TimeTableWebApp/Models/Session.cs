@@ -6,7 +6,7 @@ namespace TimeTableWebApp.Models
     public partial class Session
     {
         public int Sesid { get; set; }
-        public int Cid { get; set; }
+        public int Gid { get; set; }
         public int Rid { get; set; }
         public DateTime Date { get; set; }
         public int Tid { get; set; }
@@ -14,10 +14,9 @@ namespace TimeTableWebApp.Models
         public int Lid { get; set; }
         public bool? Attanded { get; set; }
 
-        public virtual Class Class { get; set; } = null!;
+        public virtual Group Group { get; set; } = null!;
         public virtual Lecturer Lecturer { get; set; } = null!;
         public virtual Room Room { get; set; } = null!;
-        public virtual Attandance Attandance { get; set; } = null!;
         public virtual TimeSlot TimeSlot { get; set; } = null!;
     }
 }

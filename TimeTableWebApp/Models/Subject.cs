@@ -7,12 +7,12 @@ namespace TimeTableWebApp.Models
     {
         public Subject()
         {
-            Classes = new HashSet<Class>();
+            Groups = new HashSet<Group>();
         }
 
         public int Subid { get; set; }
         public string Subname { get; set; } = null!;
 
-        public virtual ICollection<Class> Classes { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
     }
 }

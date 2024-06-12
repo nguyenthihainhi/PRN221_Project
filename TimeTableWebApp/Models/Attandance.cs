@@ -11,7 +11,7 @@ namespace TimeTableWebApp.Models
         public string Description { get; set; } = null!;
         public DateTime? RecordTime { get; set; }
 
+        public virtual Session Session { get; set; } = null!;
         public virtual Student Student { get; set; } = null!;
-        public virtual Session? Session { get; set; }
     }
 }

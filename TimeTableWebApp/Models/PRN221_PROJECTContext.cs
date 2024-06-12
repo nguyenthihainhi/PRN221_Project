@@ -18,11 +18,12 @@ namespace TimeTableWebApp.Models
 
         public virtual DbSet<Attandance> Attandances { get; set; } = null!;
         public virtual DbSet<Class> Classes { get; set; } = null!;
+        public virtual DbSet<Group> Groups { get; set; } = null!;
         public virtual DbSet<Lecturer> Lecturers { get; set; } = null!;
         public virtual DbSet<Room> Rooms { get; set; } = null!;
         public virtual DbSet<Session> Sessions { get; set; } = null!;
         public virtual DbSet<Student> Students { get; set; } = null!;
-        public virtual DbSet<StudentClass> StudentClasses { get; set; } = null!;
+        public virtual DbSet<StudentGroup> StudentGroups { get; set; } = null!;
         public virtual DbSet<Subject> Subjects { get; set; } = null!;
         public virtual DbSet<TimeSlot> TimeSlots { get; set; } = null!;
 
@@ -39,13 +40,9 @@ namespace TimeTableWebApp.Models
         {
             modelBuilder.Entity<Attandance>(entity =>
             {
-                entity.HasKey(e => e.Sesid);
+                entity.HasNoKey();
 
                 entity.ToTable("Attandance");
-
-                entity.Property(e => e.Sesid)
-                    .ValueGeneratedNever()
-                    .HasColumnName("sesid");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(150)
@@ -58,10 +55,18 @@ namespace TimeTableWebApp.Models
                     .HasColumnType("datetime")
                     .HasColumnName("record_time");
 
+                entity.Property(e => e.Sesid).HasColumnName("sesid");
+
                 entity.Property(e => e.Stid).HasColumnName("stid");
 
+                entity.HasOne(d => d.Session)
+                    .WithMany()
+                    .HasForeignKey(d => d.Sesid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Attandance_Session");
+
                 entity.HasOne(d => d.Student)
-                    .WithMany(p => p.Attandances)
+                    .WithMany()
                     .HasForeignKey(d => d.Stid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Attandance_Student");
@@ -69,7 +74,8 @@ namespace TimeTableWebApp.Models
 
             modelBuilder.Entity<Class>(entity =>
             {
-                entity.HasKey(e => e.Cid);
+                entity.HasKey(e => e.Cid)
+                    .HasName("PK_Class_1");
 
                 entity.ToTable("Class");
 
@@ -78,32 +84,35 @@ namespace TimeTableWebApp.Models
                     .HasColumnName("cid");
 
                 entity.Property(e => e.Cname)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
+                    .HasMaxLength(50)
                     .HasColumnName("cname");
+            });
 
-                entity.Property(e => e.Lid).HasColumnName("lid");
+            modelBuilder.Entity<Group>(entity =>
+            {
+                entity.HasKey(e => e.Gid);
 
-                entity.Property(e => e.Sem)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("sem");
+                entity.ToTable("Group");
+
+                entity.Property(e => e.Gid)
+                    .ValueGeneratedNever()
+                    .HasColumnName("gid");
+
+                entity.Property(e => e.Cid).HasColumnName("cid");
 
                 entity.Property(e => e.Subid).HasColumnName("subid");
 
-                entity.Property(e => e.Year).HasColumnName("year");
-
-                entity.HasOne(d => d.Lecturer)
-                    .WithMany(p => p.Classes)
-                    .HasForeignKey(d => d.Lid)
+                entity.HasOne(d => d.Class)
+                    .WithMany(p => p.Groups)
+                    .HasForeignKey(d => d.Cid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Class_Lecturer");
+                    .HasConstraintName("FK_Group_Class");
 
                 entity.HasOne(d => d.Subject)
-                    .WithMany(p => p.Classes)
+                    .WithMany(p => p.Groups)
                     .HasForeignKey(d => d.Subid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Class_Subject");
+                    .HasConstraintName("FK_Group_Subject");
             });
 
             modelBuilder.Entity<Lecturer>(entity =>
@@ -154,11 +163,11 @@ namespace TimeTableWebApp.Models
 
                 entity.Property(e => e.Attanded).HasColumnName("attanded");
 
-                entity.Property(e => e.Cid).HasColumnName("cid");
-
                 entity.Property(e => e.Date)
                     .HasColumnType("date")
                     .HasColumnName("date");
+
+                entity.Property(e => e.Gid).HasColumnName("gid");
 
                 entity.Property(e => e.Index).HasColumnName("index");
 
@@ -168,11 +177,11 @@ namespace TimeTableWebApp.Models
 
                 entity.Property(e => e.Tid).HasColumnName("tid");
 
-                entity.HasOne(d => d.Class)
+                entity.HasOne(d => d.Group)
                     .WithMany(p => p.Sessions)
-                    .HasForeignKey(d => d.Cid)
+                    .HasForeignKey(d => d.Gid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Session_Class");
+                    .HasConstraintName("FK_Session_Group");
 
                 entity.HasOne(d => d.Lecturer)
                     .WithMany(p => p.Sessions)
@@ -185,12 +194,6 @@ namespace TimeTableWebApp.Models
                     .HasForeignKey(d => d.Rid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Session_Room");
-
-                entity.HasOne(d => d.Attandance)
-                    .WithOne(p => p.Session)
-                    .HasForeignKey<Session>(d => d.Sesid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Session_Attandance");
 
                 entity.HasOne(d => d.TimeSlot)
                     .WithMany(p => p.Sessions)
@@ -218,27 +221,25 @@ namespace TimeTableWebApp.Models
                     .HasColumnName("stname");
             });
 
-            modelBuilder.Entity<StudentClass>(entity =>
+            modelBuilder.Entity<StudentGroup>(entity =>
             {
-                entity.HasKey(e => e.Stid);
+                entity.HasNoKey();
 
-                entity.ToTable("Student_Class");
+                entity.ToTable("Student_Group");
 
-                entity.Property(e => e.Stid)
-                    .ValueGeneratedNever()
-                    .HasColumnName("stid");
+                entity.Property(e => e.Gid).HasColumnName("gid");
 
-                entity.Property(e => e.Cid).HasColumnName("cid");
+                entity.Property(e => e.Stid).HasColumnName("stid");
 
-                entity.HasOne(d => d.Class)
-                    .WithMany(p => p.StudentClasses)
-                    .HasForeignKey(d => d.Cid)
+                entity.HasOne(d => d.Group)
+                    .WithMany()
+                    .HasForeignKey(d => d.Gid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Student_Class_Class");
+                    .HasConstraintName("FK_Student_Group_Group");
 
                 entity.HasOne(d => d.Student)
-                    .WithOne(p => p.StudentClass)
-                    .HasForeignKey<StudentClass>(d => d.Stid)
+                    .WithMany()
+                    .HasForeignKey(d => d.Stid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Student_Class_Student");
             });
